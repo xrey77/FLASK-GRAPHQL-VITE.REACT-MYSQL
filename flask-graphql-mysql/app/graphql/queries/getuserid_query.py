@@ -1,0 +1,42 @@
+import strawberry
+from typing import Optional
+from app.models.user import User, db
+from app.graphql.types.userType import UserType
+
+@strawberry.type
+class GetUserId():
+    @strawberry.field
+    def user(self, id: strawberry.ID) -> Optional[UserType]:
+        user_model = db.session.get(User, id) 
+        
+        if not user_model:
+            return None
+            
+        return UserType(
+            id=user_model.id,
+            username=user_model.username,
+            email=user_model.email
+        )
+
+# ==========REQUEST================
+# query GetUserId($id: ID!) {
+#   user(id: $id) {    
+#   	id
+#     firstname
+#     lastname
+#     email
+#     mobile
+#     userpic
+#     isactivated
+#     isblocked
+#     mailtoken
+#     userpic
+#     qrcodeurl
+#   }
+# }
+
+
+# ========VARIABLES======
+# {
+#   "id": 1
+# }
