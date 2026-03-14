@@ -7,7 +7,7 @@ from flask import jsonify
 class Product(db.Model, SerializerMixin):
     __tablename__ = 'products'
     id = db.Column(db.Integer, primary_key=True)
-    category = db.Column(db.String(8),nullable=True)
+    category = db.Column(db.String(50),nullable=True)
     descriptions = db.Column(db.String(50),nullable=False, unique=True)
     qty= db.Column(db.Integer, server_default=text("0"))
     unit = db.Column(db.String(10),nullable=False)

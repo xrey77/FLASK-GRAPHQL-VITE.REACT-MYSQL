@@ -2,6 +2,7 @@ import strawberry
 from typing import Optional
 from app.models.user import User, db
 from app.graphql.types.userType import UserType
+from graphql import GraphQLError
 
 @strawberry.type
 class GetUserId():
@@ -10,12 +11,20 @@ class GetUserId():
         user_model = db.session.get(User, id) 
         
         if not user_model:
-            return None
+            raise GraphQLError(f"User ID not found.")
             
         return UserType(
             id=user_model.id,
+            firstname=user_model.firstname,
+            lastname=user_model.lastname,
+            email=user_model.email,
+            mobile=user_model.mobile,
             username=user_model.username,
-            email=user_model.email
+            isactivated=user_model.isactivated,
+            isblocked=user_model.isblocked,
+            mailtoken=user_model.mailtoken,
+            userpic=user_model.userpic,
+            qrcodeurl=user_model.qrcodeurl
         )
 
 # ==========REQUEST================

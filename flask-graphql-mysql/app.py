@@ -1,5 +1,8 @@
 import strawberry
+from flask_cors import CORS
+import os
 from flask import Flask
+from flask import render_template
 from app.config import db
 from flask_sqlalchemy import SQLAlchemy
 from strawberry.flask.views import GraphQLView
@@ -12,16 +15,22 @@ from app.graphql.types.roleType import RoleType
 from app.graphql.queries.user_query import UserQuery
 from app.graphql.queries.getuserid_query import GetUserId
 from app.graphql.queries.product_query import ProductQuery
+from app.graphql.queries.sales_query import SaleQuery
+from app.graphql.queries.list_query import ProductList
+from app.graphql.queries.search_query import ProductSearch
 
 from app.graphql.mutations.register.register_mutation import RegisterUser
 from app.graphql.mutations.login.userlogin_mutation import LoginUser
+from app.graphql.mutations.updateprofile.profile_mutation import UpdateProfile
+from app.graphql.mutations.updatepassword.updatepassword_mutation import ChangePassword
+from app.graphql.mutations.activatemfa.mfaactivation_mutation import ActivateMfa
+from app.graphql.mutations.uploaduserpic.uploadprofilepic_mutation import UploadPicture
+from app.graphql.mutations.otpverification.validateotp_mutation import VerifyOtp
 
 from app.models.user import User
 from app.models.product import Product
 from app.models.sale import Sale
 from app.models.role import Role
-
-# db.configure_mappers()                 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://rey:rey@127.0.0.1/flask_graphql'
@@ -31,11 +40,11 @@ db.init_app(app)
 # db = SQLAlchemy(app)
 
 @strawberry.type
-class Query(UserQuery, GetUserId, ProductQuery):
+class Query(UserQuery, GetUserId, ProductQuery, SaleQuery, ProductList, ProductSearch):
     pass
 
 @strawberry.type
-class Mutation(RegisterUser, LoginUser):
+class Mutation(RegisterUser, LoginUser, UpdateProfile, ChangePassword, ActivateMfa, UploadPicture, VerifyOtp):
     pass
 
 schema = strawberry.Schema(
@@ -44,9 +53,30 @@ schema = strawberry.Schema(
     config=StrawberryConfig(auto_camel_case=False)
 )
 
+CORS(app, resources={r"/graphql": {"origins": "http://localhost:5173"}})
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route('/images')
+def gallery():
+    image_names = os.listdir('static/images')
+    return render_template(image_names=image_names)
+
+@app.route('/products')
+def product_gallery():
+    image_names = os.listdir('static/products') 
+    return render_template(image_names=image_names, folder='products')
+
+@app.route('/users')
+def users():
+    image_names = os.listdir('static/users')
+    return render_template(image_names=image_names)
+
 app.add_url_rule(
     "/graphql",
-    view_func=GraphQLView.as_view("graphql_view", schema=schema),
+    view_func=GraphQLView.as_view("graphql_view", schema=schema, multipart_uploads_enabled=True),
 )
 
 if __name__ == "__main__":
