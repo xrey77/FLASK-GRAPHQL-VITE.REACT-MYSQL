@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client/react';
 import { SALES_QUERY } from "../graphql/sales_query";
-import type { SalesListData } from "../graphql/sales_query";
+import type { SalesListData, SaleData } from "../graphql/sales_query";
 import { useEffect, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { 
@@ -110,7 +110,6 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,
 export default function SalesChart() {
 
     const [message, setMessage] = useState<string>('');
-    const [mounted, setMounted] = useState(false);
 
     const chartRef = useRef<HTMLDivElement>(null); 
 
@@ -141,21 +140,34 @@ export default function SalesChart() {
 
     const [fetchSales] = useLazyQuery<SalesListData>(SALES_QUERY);
     const getSales = async () => {
+      setMessage("Loading chart data...");
     try {
         const { data } = await fetchSales();
-          if (data && data.sales) {
+          if (data?.sales) {
               const sales = data.sales;
-              
+
               setChartData({
-                  labels: sales.map(item => 
-                      new Date(item.saledate).toLocaleDateString('en-US', { month: 'short' })
+                  // Explicitly type 'item' as SaleData
+                  labels: sales.map((item: SaleData) => 
+                    new Date(item.saledate).toLocaleDateString('en-US', { month: 'short' })
                   ),        
                   datasets: [{
-                      label: 'Sales Amount',
-                      data: sales.map(item => Number(item.saleamount) || 0),
-                      backgroundColor: 'rgba(60, 179, 113, 0.8)',
+                    label: 'Sales Amount',
+                    // Explicitly type 'item' as SaleData
+                    data: sales.map((item: SaleData) => Number(item.saleamount) || 0),
+                    backgroundColor: 'rgba(60, 179, 113, 0.8)',
                   }],
-              });
+                });              
+              // setChartData({
+              //     labels: sales.map(item => 
+              //         new Date(item.saledate).toLocaleDateString('en-US', { month: 'short' })
+              //     ),        
+              //     datasets: [{
+              //         label: 'Sales Amount',
+              //         data: sales.map(item => Number(item.saleamount) || 0),
+              //         backgroundColor: 'rgba(60, 179, 113, 0.8)',
+              //     }],
+              // });
           }      
         } catch (err: any) {        
             if (err.AbortError) {
@@ -170,7 +182,6 @@ export default function SalesChart() {
         img.src = '/images/logo.png';
         img.onload = () => setLogo(img);
 
-        setMounted(true);
         getSales();
     },[]);
 
@@ -199,7 +210,7 @@ export default function SalesChart() {
           {chartData.datasets.length > 0 ? (
             <Bar options={options} data={chartData} plugins={[logoPlugin]} />
           ) : (
-            <p className="text-center">Loading chart data...</p>
+            <p className="text-center">{message}</p>
           )}
       </div>
       <div className='btn-print'>

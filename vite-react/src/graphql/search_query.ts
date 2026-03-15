@@ -38,7 +38,12 @@ export interface ProductData {
 }
 
 export interface ProductSearchData {
-  user: ProductData;
+  product_search: {
+    page: number;
+    totpage: number;
+    totalrecords: number;
+    products: ProductData[];
+  };  
 }
 
 export interface ProductSearchVariables {

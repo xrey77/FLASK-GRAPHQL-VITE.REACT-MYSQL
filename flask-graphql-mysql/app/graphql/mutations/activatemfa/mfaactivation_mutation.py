@@ -12,6 +12,7 @@ from graphql import GraphQLError
 from app.models.user import User, db
 from app.graphql.mutations.activatemfa.inputs import MfaActivationInput
 from app.models.user import User
+from app.services.isAuthenticated import IsAuthenticated
 
 @strawberry.type
 class MfaActivationResponse:
@@ -20,7 +21,8 @@ class MfaActivationResponse:
 
 @strawberry.type
 class ActivateMfa:
-    @strawberry.mutation
+
+    @strawberry.field(permission_classes=[IsAuthenticated])    
     def activate_mfa(self, input: MfaActivationInput) -> MfaActivationResponse:
         # 1. Fetch the user
         user_model = db.session.get(User, input.id)         

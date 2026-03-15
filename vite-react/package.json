@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.1.6",
+    "@react-pdf/renderer": "^4.3.2",
     "@types/axios": "^0.9.36",
     "@types/bootstrap": "^5.2.10",
     "@types/jquery": "^3.5.33",

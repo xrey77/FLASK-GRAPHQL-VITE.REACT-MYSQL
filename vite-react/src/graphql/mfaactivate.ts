@@ -29,6 +29,8 @@ export interface MfaActivationData {
 }
 
 export interface MfaActivationVariables {
-  id: number;
-  twofactorenabled: boolean;
+  input: {
+    id: number;
+    twofactorenabled: boolean;
+  }
 }

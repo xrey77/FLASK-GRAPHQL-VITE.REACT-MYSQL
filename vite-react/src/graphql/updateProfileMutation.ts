@@ -27,8 +27,10 @@ export interface ProfiledData {
 }
 
 export interface ProfileVariables {
-  id: number;
-  firstname: string;
-  lastname: string;
-  mobile: string;
+  input: {
+    id: number;
+    firstname: string;
+    lastname: string;
+    mobile: string;
+  }
 }

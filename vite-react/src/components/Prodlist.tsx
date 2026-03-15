@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLazyQuery } from '@apollo/client/react';
 import { LIST_QUERY } from '../graphql/list_query';
-import type { ProductListData, ProductListVariables } from '../graphql/list_query';
+import type { ProductListData, ProductListVariables, ProductData } from '../graphql/list_query';
 
 export default function Prodlist() {
 
@@ -18,7 +18,8 @@ export default function Prodlist() {
     const [totalrecs, setTotalrecs] = useState<number>(0);
     const [message, setMessage] = useState<string>('');
 
-    const [products, setProducts] = useState<[]>([]);
+    const [products, setProducts] = useState<ProductData[]>([]);
+
 
     const [product_list] = useLazyQuery<ProductListData, ProductListVariables>(LIST_QUERY);
 
@@ -28,13 +29,8 @@ export default function Prodlist() {
         try {
             const { data } = await product_list({ 
                 variables: { page: pg }
-                // context: {
-                //     headers: {
-                //         Authorization: `Bearer ${tokenid}`,
-                //     },
-                // },
-
             });
+
             if (data?.product_list) {
               setPage(data.product_list.page);
               setProducts(data.product_list.products);

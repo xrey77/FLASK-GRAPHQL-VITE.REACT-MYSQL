@@ -3,6 +3,7 @@ from strawberry.types import Info
 from graphql import GraphQLError
 from app.models.user import User, db
 from app.graphql.mutations.updateprofile.inputs import UserProfileInput
+from app.services.isAuthenticated import IsAuthenticated
 
 @strawberry.type
 class ProfileResponse:
@@ -10,7 +11,8 @@ class ProfileResponse:
 
 @strawberry.type
 class UpdateProfile:
-    @strawberry.mutation
+
+    @strawberry.field(permission_classes=[IsAuthenticated])    
     def update_profile(self, info: Info, input: UserProfileInput) -> ProfileResponse:
         user_id = input.id
         

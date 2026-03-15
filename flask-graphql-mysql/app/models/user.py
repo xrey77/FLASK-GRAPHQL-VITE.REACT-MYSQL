@@ -14,6 +14,7 @@ class User(db.Model, SerializerMixin):
     username = db.Column(db.String(32),nullable=False, unique=True)
     password = db.Column(db.String(200),nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False, server_default="1")    
+
     isactivated = db.Column(db.Integer, server_default=text("1"))
     isblocked = db.Column(db.Integer, server_default=text("0"))
     mailtoken = db.Column(db.Integer, server_default=text("0"))
@@ -23,8 +24,7 @@ class User(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     role = db.relationship("Role", back_populates="users")        
-    # role = db.Column(db.String(50), default='user')
-
+    
     def to_dict(self, secret=None, qrcodeurl=None):
         return {
             'id': self.id,

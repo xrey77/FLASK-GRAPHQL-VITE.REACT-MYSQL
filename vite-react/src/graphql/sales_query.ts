@@ -15,7 +15,7 @@ export interface SaleData {
 }
 
 export interface SalesListData {
-  user: SaleData;
+  sales: SaleData[];
 }
 
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { useLazyQuery } from '@apollo/client/react';
 import { LIST_QUERY } from '../graphql/list_query';
-import type { ProductListData, ProductListVariables } from '../graphql/list_query';
+import type { ProductListData, ProductListVariables, ProductData } from '../graphql/list_query';
 
 
 const toDecimal = (number: any) => {
@@ -14,7 +14,7 @@ const toDecimal = (number: any) => {
 };
 export default function Prodcatalog() {
     const [page, setPage] = useState<number>(1);
-    const [prods, setProds] = useState<[]>([]);
+    const [prods, setProds] = useState<ProductData[]>([]);
     const [totpage, setTotpage] = useState<number>(0);
     const [totalrecords, setTotalrecords] = useState<number>(0);
     const [message, setMessage] = useState('');
@@ -26,12 +26,6 @@ export default function Prodcatalog() {
         try {
             const { data } = await product_list({ 
                 variables: { page: pg }
-                // context: {
-                //     headers: {
-                //         Authorization: `Bearer ${tokenid}`,
-                //     },
-                // },
-
             });
             if (data?.product_list) {
               setPage(data.product_list.page);

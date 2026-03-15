@@ -10,6 +10,7 @@ from app.models.user import User, db
 from app.graphql.mutations.register.inputs import CreateUserInput
 from app.models.user import User
 from app.services.hashing import Hasher
+from app.services.allowanyuser import AllowAny
 
 @strawberry.type
 class CreateUserResponse:
@@ -17,7 +18,7 @@ class CreateUserResponse:
 
 @strawberry.type
 class RegisterUser:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[AllowAny])    
     def create_user(self, input: CreateUserInput) -> CreateUserResponse:
         
         query_email = select(User).where(User.email == input.email)

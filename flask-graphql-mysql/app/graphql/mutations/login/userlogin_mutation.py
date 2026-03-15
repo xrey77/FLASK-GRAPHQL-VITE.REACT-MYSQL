@@ -1,14 +1,12 @@
 import strawberry
 from graphql import GraphQLError
 from sqlalchemy.future import select
-
 from app.models.user import User, db
 from app.graphql.types.userType import UserType
 from app.graphql.types.roleType import RoleType
 from app.graphql.mutations.login.inputs import LoginInput
 from app.services.hashing import Hasher
 from app.services.auth import create_access_token
-
 
 @strawberry.type
 class LoginResponse:

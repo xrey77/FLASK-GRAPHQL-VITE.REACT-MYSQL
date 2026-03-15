@@ -1,15 +1,16 @@
 import strawberry
 from typing import Optional
+from strawberry.types import Info
 from app.models.user import User, db
 from app.graphql.types.userType import UserType
 from graphql import GraphQLError
+from app.services.isAuthenticated import IsAuthenticated
 
 @strawberry.type
 class GetUserId():
-    @strawberry.field
-    def user(self, id: strawberry.ID) -> Optional[UserType]:
+    @strawberry.field(permission_classes=[IsAuthenticated])    
+    def user(self, id: strawberry.ID, info: Info) -> Optional[UserType]:
         user_model = db.session.get(User, id) 
-        
         if not user_model:
             raise GraphQLError(f"User ID not found.")
             

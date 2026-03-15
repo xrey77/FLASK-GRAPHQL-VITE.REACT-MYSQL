@@ -8,6 +8,7 @@ from app.models.user import User, db
 from app.graphql.mutations.updatepassword.inputs import PasswordInput
 from app.models.user import User
 from app.services.hashing import Hasher
+from app.services.isAuthenticated import IsAuthenticated
 
 @strawberry.type
 class PasswordUpdateResponse:
@@ -15,7 +16,8 @@ class PasswordUpdateResponse:
 
 @strawberry.type
 class ChangePassword:
-    @strawberry.mutation
+
+    @strawberry.field(permission_classes=[IsAuthenticated])    
     def change_password(self, input: PasswordInput) -> PasswordUpdateResponse:
         user_id = input.id
 

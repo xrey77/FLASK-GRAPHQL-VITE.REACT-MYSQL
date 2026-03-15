@@ -29,25 +29,25 @@ export default function Mfa() {
     event.preventDefault();
 
     const userid = sessionStorage.getItem('USERID') ?? '';
-    // const token = sessionStorage.getItem('TOKEN') ?? '';
+    const token = sessionStorage.getItem('TOKEN') ?? '';
     setMessage('please wait..');
 
     try {
         await verify_otp({
             variables: {
                 input: { 
-                  id: parseInt(userid), otp: otp }
-                  // context: {
-                  //   Authorization: `Bearer ${token}`
-                  // }
-            }
+                  id: parseInt(userid), otp: otp },
+            },
+            context: {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
         });
     } catch (err: any) {
         setMessage(err.message);
         setTimeout(() => { setMessage(''); }, 3000);
     }
-
-
   }
 
   const closeMfa = (event: any) => {

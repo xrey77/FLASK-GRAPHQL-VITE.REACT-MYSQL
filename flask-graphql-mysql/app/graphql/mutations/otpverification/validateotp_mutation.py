@@ -3,6 +3,7 @@ from graphql import GraphQLError
 from app.models.user import User, db
 from app.graphql.mutations.otpverification.inputs import OtpInput
 import pyotp
+from app.services.isAuthenticated import IsAuthenticated
 
 @strawberry.type
 class OtpResponse:
@@ -11,7 +12,8 @@ class OtpResponse:
 
 @strawberry.type
 class VerifyOtp:
-    @strawberry.mutation
+
+    @strawberry.field(permission_classes=[IsAuthenticated])    
     def verify_otp(self, input: OtpInput) -> OtpResponse:
         user_id = input.id
         

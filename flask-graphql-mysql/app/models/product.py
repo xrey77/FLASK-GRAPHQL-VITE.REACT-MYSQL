@@ -8,6 +8,7 @@ class Product(db.Model, SerializerMixin):
     __tablename__ = 'products'
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(50),nullable=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     descriptions = db.Column(db.String(50),nullable=False, unique=True)
     qty= db.Column(db.Integer, server_default=text("0"))
     unit = db.Column(db.String(10),nullable=False)
@@ -19,6 +20,7 @@ class Product(db.Model, SerializerMixin):
     productpicture = db.Column(db.String(100))
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())        
+    category_rel = db.relationship("Category", back_populates="products")        
 
     def to_dict(self):
         return {

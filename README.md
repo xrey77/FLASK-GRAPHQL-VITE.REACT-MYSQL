@@ -17,6 +17,9 @@ Vite 7.2.2 + React 19.2.0 and MySql Start-up Project</h3>
 This will require your Google/Microsoft Authenticator</p>
 <p>4. Upload User's Profile Picture </p>
 <p>5. Products Listings, Catalogs pagination and Product Search</p>
+<p>6. Product Report-PDF</p>
+<p>7. Annual Sales Chart</p>
+<p>8. Product by Category Report</p>
 <br/>
 <p>Instructions</p>
 <p>1. python -m venv .venv</p>

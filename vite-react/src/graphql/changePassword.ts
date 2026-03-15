@@ -27,6 +27,8 @@ export interface PasswordData {
 }
 
 export interface PasswordVariables {
-  id: number;
-  password: string;
+  input: {
+    id: number;
+    password: string;
+  }
 }

@@ -1,7 +1,6 @@
-import axios from 'axios';
 import { useState } from 'react';import { useLazyQuery } from '@apollo/client/react';
 import { SEARCH_QUERY } from '../graphql/search_query';
-import type { ProductSearchData, ProductSearchVariables } from '../graphql/serach_query';
+import type { ProductSearchData, ProductSearchVariables, ProductData } from '../graphql/search_query';
 
 const toDecimal = (number: any) => {
   const formatter = new Intl.NumberFormat('en-US', {
@@ -11,10 +10,9 @@ const toDecimal = (number: any) => {
   return formatter.format(number);
 };
 
-
 export default function Prodsearch() {
   const [message, setMessage] = useState('');
-  const [prodsearch, setProdsearch] = useState<[]>([]);
+  const [prodsearch, setProdsearch] = useState<ProductData[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totpage, setTotpage] = useState<number>(0);
   const [totalrecords, setTotalrecords] = useState<number>(0);
@@ -28,12 +26,6 @@ export default function Prodsearch() {
         try {
             const { data } = await product_search({ 
                 variables: { page: page, keyword: searchkey }
-                // context: {
-                //     headers: {
-                //         Authorization: `Bearer ${tokenid}`,
-                //     },
-                // },
-
             });
             if (data?.product_search) {
               setPage(data.product_search.page);
@@ -57,12 +49,6 @@ export default function Prodsearch() {
         try {
             const { data } = await product_search({ 
                 variables: { page: page, keyword: searchkey }
-                // context: {
-                //     headers: {
-                //         Authorization: `Bearer ${tokenid}`,
-                //     },
-                // },
-
             });
             if (data?.product_search) {
               setPage(data.product_search.page);

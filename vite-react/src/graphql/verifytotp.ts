@@ -28,6 +28,8 @@ export interface OtpVerificationData {
 }
 
 export interface OtpVerificationVariables {
-  id: number;
-  otp: string;
+  input: {
+    id: number;
+    otp: string;
+  }
 }

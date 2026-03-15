@@ -34,17 +34,16 @@ export default function Profile() {
 
     const [getUser] = useLazyQuery<GetUserIdData, GetUserIdVariables>(GETUSERID_QUERY);
 
-    const fetchUserData = async (idno: number, _tokenid: any) => {
+    const fetchUserData = async (idno: number, tokenid: any) => {
         
         try {
             const { data } = await getUser({ 
-                variables: { id: idno }
-                // context: {
-                //     headers: {
-                //         Authorization: `Bearer ${tokenid}`,
-                //     },
-                // },
-
+                variables: { id: idno },
+                context: {
+                    headers: {
+                        Authorization: `Bearer ${tokenid}`,
+                    },
+                },
             });
             if (data?.user) {
                 setLname(data.user.lastname);
@@ -52,7 +51,7 @@ export default function Profile() {
                 setEmail(data.user.email);
                 setMobile(data.user.mobile);
                 setUserpicture(`http://127.0.0.1:5000/static/users/${data.user.userpic}`);
-                setQrcodeurl(data.user.qrcodeurl ?? '/images/qrcode.png');
+                setQrcodeurl(data.user.qrcodeurl ?? '/static/images/qrcode.png');
             }            
             return;
         } catch (err: any) {
@@ -95,9 +94,13 @@ export default function Profile() {
         event.preventDefault();
         try {
             await update_profile({
-                variables: {
-                    input: { id: userid, firstname: fname, lastname: lname, mobile: mobile }
-                }
+                variables: {input: { id: userid, firstname: fname, lastname: lname, mobile: mobile }
+                },
+                context: {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             });
         } catch (err: any) {
             setTimeout(() => { setProfileMsg(''); }, 3000);
@@ -134,48 +137,14 @@ export default function Profile() {
                     file: file, 
                 },
             },
+            context: {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
         });
     }
   };
-
-    // const changePicture = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     event.preventDefault();
-    //         var pix = URL.createObjectURL(event.target.files[0]);
-    //         jQuery('#userpic').attr('src', pix)
-            
-    //         try {
-    //             await upload_picture({
-    //                 variables: {
-    //                     input: { id: userid, file: pix }
-    //                 }
-    //             });
-    //         } catch (err: any) {
-    //             setProfileMsg(err.message);
-    //             alert("error 2");
-    //             // setTimeout(() => { setProfileMsg(''); }, 3000);
-    //         }
-    //         ;
-    //         // const formData = new FormData();
-    //         // formData.append('userpic', event.target.files[0]);
-    //         // api.patch(`api/uploadpicture/${userid}/`, formData, {headers: {
-    //         //     Authorization: `Bearer ${token}`
-    //         // }})
-    //         // .then((res: any) => {
-    //         //     setProfileMsg(res.data.message);
-    //         //     setTimeout(() => {
-    //         //         sessionStorage.setItem('USERPIC',res.data.userpic)
-    //         //         setProfileMsg('');
-    //         //         location.reload();
-    //         //     },3000);
-    //         //     return;
-    //         // }, (error: any) => {
-    //         //     setProfileMsg(error.response.data.message);
-    //         //     setTimeout(() => {
-    //         //         setProfileMsg('');
-    //         //     },3000);
-    //         //     return;
-    //         // });
-    // }
 
     const cpwdCheckbox = (e: any) => {
         if (e.target.checked) {
@@ -228,7 +197,12 @@ export default function Profile() {
             await activate_mfa({
                 variables: {
                     input: { id: userid, twofactorenabled: true }
-                }
+                },
+                context: {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             });
         } catch (err: any) {
             let qrcode: string = `http://127.0.0.1:5000/static/ images/qrcode.png`;
@@ -242,7 +216,12 @@ export default function Profile() {
             await activate_mfa({
                 variables: {
                     input: { id: userid, twofactorenabled: false }
-                }
+                },
+                context: {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             });
         } catch (err: any) {
             setTimeout(() => { setProfileMsg(''); }, 3000);
@@ -290,7 +269,12 @@ export default function Profile() {
             await change_password({
                 variables: {
                     input: { id: userid,  password: newpassword }
-                }
+                },
+                context: {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             });
         } catch (err: any) {
             setTimeout(() => { setProfileMsg(''); }, 3000);
@@ -304,7 +288,7 @@ export default function Profile() {
             <h3 className="text-white">User Profile ID No. {userid}</h3>
         </div>
         <div className="card-body">
-        <form encType="multipart/form-data" autoComplete='false'>
+        <form onSubmit={submitProfile} encType="multipart/form-data" autoComplete='false'>
                 <div className='row'>
                     <div className='col'>
                         <input className="form-control bg-warning text-dark border-primary" id="firstname" name="firstname" type="text" value={fname} onChange={e => setFname(e.target.value)} required  />
@@ -390,7 +374,7 @@ export default function Profile() {
                 </div> 
                 {
                     showupdate === false ? (
-                        <button onClick={submitProfile} type='submit' className='btn btn-primary text-white mt-2'>update profile</button>
+                        <button type='submit' className='btn btn-primary text-white mt-2'>update profile</button>
                     )
                     :
                     null

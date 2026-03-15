@@ -66,7 +66,7 @@ export default function Login() {
           window.sessionStorage.setItem('USERID',data.login.user.id);
           window.sessionStorage.setItem('TOKEN',data.login.token);
           // window.sessionStorage.setItem('ROLE',data.login.user.roles);
-          let userpic: string = `http://127.0.0.1:5000/static/images/${data.login.user.userpic}`
+          let userpic: string = `http://127.0.0.1:5000/static/users/${data.login.user.userpic}`
           window.sessionStorage.setItem('USERPIC', userpic);
           jQuery("#loginReset").trigger("click");
           setIsdisabled(false);
@@ -76,7 +76,7 @@ export default function Login() {
           window.sessionStorage.setItem('USERNAME',data.login.user.username);
           window.sessionStorage.setItem('TOKEN',data.login.token);                        
           // window.sessionStorage.setItem('ROLE',res.data.roles);
-          let userpic: string = `http://127.0.0.1:5000/static/images/${data.login.user.userpic}`
+          let userpic: string = `http://127.0.0.1:5000/static/users/${data.login.user.userpic}`
           window.sessionStorage.setItem('USERPIC', userpic);
           setIsdisabled(false);
           jQuery("#loginReset").trigger('"click')

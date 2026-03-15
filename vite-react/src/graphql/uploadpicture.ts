@@ -28,6 +28,8 @@ export interface UploadData {
 }
 
 export interface UploadVariables {
-  id: number;
-  file: File;
+  input: {
+    id: number;
+    file: File;
+  }
 }

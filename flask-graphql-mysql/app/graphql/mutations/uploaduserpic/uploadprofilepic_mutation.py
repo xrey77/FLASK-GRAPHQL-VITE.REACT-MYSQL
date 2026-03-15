@@ -6,6 +6,7 @@ from app.graphql.mutations.uploaduserpic.inputs import UploadInput
 from pathlib import Path
 from werkzeug.utils import secure_filename
 from flask import current_app
+from app.services.isAuthenticated import IsAuthenticated
 
 @strawberry.type
 class UploadResponse:
@@ -14,7 +15,8 @@ class UploadResponse:
 
 @strawberry.type
 class UploadPicture:
-    @strawberry.mutation
+
+    @strawberry.field(permission_classes=[IsAuthenticated])    
     def upload_picture(self, input: "UploadInput") -> UploadResponse:
         user_id = str(input.id)
         file = input.file

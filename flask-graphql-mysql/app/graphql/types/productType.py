@@ -15,3 +15,4 @@ class ProductType:
     alertstocks: int
     criticalstocks: int
     productpicture: Optional[str]
+
